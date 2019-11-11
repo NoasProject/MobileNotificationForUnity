@@ -12,8 +12,6 @@ public class TestNotification : MonoBehaviour
     {
         Debug.Log("Start -- Test ---- ");
 
-        MobileNotificationManager.Ins.CancelALLMessage();
-
         this.Send(5, 1);
         this.Send(7, 5);
         this.Send(9, 15);
@@ -31,7 +29,12 @@ public class TestNotification : MonoBehaviour
 
     private void OnApplicationPause(bool pauseStatus)
     {
-        MobileNotificationManager.Ins.OnApplicationPause(pauseStatus);
+        if (pauseStatus)
+        {
+            MobileNotificationManager.Ins.SendMessage("Test", "SubTest", $"バックグラウンドに行ってから、10秒後", 10, 110);
+            MobileNotificationManager.Ins.SendMessage("Test", "SubTest", $"バックグラウンドに行ってから、30秒後", 30, 130);
+            MobileNotificationManager.Ins.SendMessage("Test", "SubTest", $"バックグラウンドに行ってから、1分後", 60, 160);
+        }
     }
 
 }
