@@ -94,12 +94,17 @@ namespace Noa.LocalMobileNotification
 
             int cnt = this.NotificationList.Count;
 
+            // バッチ番号
+            int number = 0;
+
             for (int i = 0; i < cnt; i++)
             {
                 var channel = (iOSNotificationEx)this.NotificationList[i];
 
-                int number = (i + 1);
+                // バッチに加算する
+                number++;
 
+                // バッチ番号を設定
                 channel.Badge = number;
 
                 // iOSのPush通知設定
