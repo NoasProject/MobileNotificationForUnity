@@ -8,7 +8,7 @@ namespace Noa.LocalMobileNotification
     /// </summary>
     public interface IMobileNotification
     {
-        List<IMobileNotificationEx> NotificationList { get; set; }
+        Dictionary<int, IMobileNotificationEx> NotificationTable { get; set; }
 
         /// <summary>
         /// 初期化処理
@@ -28,7 +28,7 @@ namespace Noa.LocalMobileNotification
         /// <summary>
         /// メッセージを全て削除する
         /// </summary>
-        void CancelALLMessage();
+        void CancelALLMessage(bool isForce);
 
         /// <summary>
         /// メッセージを登録する

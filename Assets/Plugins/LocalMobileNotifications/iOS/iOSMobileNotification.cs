@@ -13,16 +13,16 @@ namespace Noa.LocalMobileNotification
         private bool ShowInForeground = false;
 
         /// <summary>
-        /// バッチの数
+        /// プッシュ通知待ちの数
         /// </summary>
-        public List<IMobileNotificationEx> NotificationList { get; set; }
+        public Dictionary<int, IMobileNotificationEx> NotificationTable { get; set; }
 
         /// <summary>
         /// 初期化処理
         /// </summary>
         public void Init()
         {
-            this.NotificationList = new List<IMobileNotificationEx>();
+            this.NotificationTable = new Dictionary<int, IMobileNotificationEx>();
         }
 
         /// <summary>
@@ -76,7 +76,11 @@ namespace Noa.LocalMobileNotification
             // iOSのPush通知設定
             // iOSNotificationCenter.ScheduleNotification(channel);
 
-            this.NotificationList.Add(channel);
+            // 登録を削除する
+            this.CancelMessage(channelId);
+
+            // 重複するチャンネルを取得する
+            this.NotificationTable[channelId] = channel;
 
             return channel;
         }
@@ -86,20 +90,26 @@ namespace Noa.LocalMobileNotification
         /// </summary>
         public void Register()
         {
-            // メッセージを削除する
-            this.CancelALLMessage();
-
             // Triggerが発生している場合は、削除する
-            this.NotificationList = this.NotificationList.Where(w => w.TriggerUtcDate > DateTime.UtcNow).OrderBy(o => o.TriggerUtcDate).ToList();
+            this.NotificationTable = this.NotificationTable.Where(w => w.Value.TriggerUtcDate > DateTime.UtcNow).ToDictionary(d => d.Key, d => d.Value);
 
-            int cnt = this.NotificationList.Count;
+            // 登録するKeyの一覧を取得し、並び替える
+            int[] registerKeys = this.NotificationTable.Keys.OrderBy(o => this.NotificationTable[o].TriggerUtcDate).ToArray();
+
+            // 登録数
+            int cnt = registerKeys.Length;
 
             // バッチ番号
             int number = 0;
 
             for (int i = 0; i < cnt; i++)
             {
-                var channel = (iOSNotificationEx)this.NotificationList[i];
+                int channelId = registerKeys[i];
+
+                var channel = (iOSNotificationEx)this.NotificationTable[channelId];
+
+                // 登録を削除する
+                this.CancelRegister(channelId);
 
                 // バッチに加算する
                 number++;
@@ -113,22 +123,40 @@ namespace Noa.LocalMobileNotification
         }
 
         /// <summary>
-        /// 初期化処理
+        /// 削除処理
         /// </summary>
         public void CancelMessage(params int[] channelIDs)
+        {
+            this.CancelRegister(channelIDs);
+
+            // 登録チャンネルを削除する
+            this.NotificationTable = this.NotificationTable.Where(w => !channelIDs.Contains(w.Key)).ToDictionary(d => d.Key, d => d.Value);
+        }
+
+        public void CancelRegister(params int[] channelIDs)
         {
             foreach (int channelId in channelIDs)
             {
                 iOSNotificationCenter.RemoveDeliveredNotification(channelId.ToString());
                 iOSNotificationCenter.RemoveScheduledNotification(channelId.ToString());
             }
-
-            this.NotificationList = this.NotificationList.Where(w => !channelIDs.Contains(w.Id)).ToList();
         }
 
-        public void CancelALLMessage()
+        /// <summary>
+        /// 全てのメッセージを削除する
+        /// </summary>
+        public void CancelALLMessage(bool isForce = false)
         {
-            this.NotificationList.Clear();
+            this.NotificationTable.Clear();
+
+            this.CancelALLRegister();
+        }
+
+        /// <summary>
+        /// 登録のみを削除
+        /// </summary>
+        public void CancelALLRegister()
+        {
             iOSNotificationCenter.RemoveAllDeliveredNotifications();
             iOSNotificationCenter.RemoveAllScheduledNotifications();
             iOSNotificationCenter.ApplicationBadge = 0;
