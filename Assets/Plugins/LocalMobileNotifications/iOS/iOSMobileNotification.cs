@@ -83,6 +83,8 @@ namespace Noa.LocalMobileNotification
         /// </summary>
         public void Register()
         {
+            Debug.Log("メッセージの登録処理を行う");
+
             // Triggerが発生している場合は、削除する
             this.NotificationTable = this.NotificationTable.Where(w => w.Value.TriggerUtcDate > DateTime.UtcNow).ToDictionary(d => d.Key, d => d.Value);
 
