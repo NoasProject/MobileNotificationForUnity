@@ -60,13 +60,6 @@ namespace Noa.LocalMobileNotification
 
             channel = channel.SetTimer(channelId, second);
 
-            // 時間をトリガーにする
-            channel.Trigger = new iOSNotificationTimeIntervalTrigger()
-            {
-                TimeInterval = TimeSpan.FromSeconds(second),
-                Repeats = false
-            };
-
             if (this.ShowInForeground)
             {
                 channel.ShowInForeground = true;
@@ -107,6 +100,12 @@ namespace Noa.LocalMobileNotification
                 int channelId = registerKeys[i];
 
                 var channel = (iOSNotificationEx)this.NotificationTable[channelId];
+
+                // Triggerの時間を更新する
+                channel.Trigger = new iOSNotificationTimeIntervalTrigger()
+                {
+                    TimeInterval = (channel.TriggerUtcDate - DateTime.UtcNow)
+                };
 
                 // 登録を削除する
                 this.CancelRegister(channelId);
