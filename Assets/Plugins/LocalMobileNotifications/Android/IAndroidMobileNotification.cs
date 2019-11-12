@@ -22,21 +22,15 @@ namespace Noa.LocalMobileNotification
 
         string ChannelDescription { get; }
 
-        // Dictionary<int, AA>
-        /*
-        var c = new AndroidNotificationChannel
-    {
-        Id = m_channelId,
-        Name = "【ここにチャンネル名】",
-        Importance = Importance.High,
-        Description = "【ここに説明文】",
-    };
-    AndroidNotificationCenter.RegisterNotificationChannel(c );
-    */
         /// <summary>
         /// チャンネル登録をする
         /// </summary>
         void RegisterChannel(int channelId);
+
+        /// <summary>
+        /// チャンネルが存在するか確認をする
+        /// </summary>
+        bool IsEnableChannel(int channelId);
     }
 }
 #endif

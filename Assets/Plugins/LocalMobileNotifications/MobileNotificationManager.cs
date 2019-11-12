@@ -46,7 +46,7 @@ namespace Noa.LocalMobileNotification
             if (paused)
             {
                 Debug.Log("バックグラウンドへ行く - プッシュ通知を登録する");
-                this.iMobileNotification.Register();
+                this.Register();
             }
 
             // 戻ってくる
@@ -59,7 +59,7 @@ namespace Noa.LocalMobileNotification
 
         public void OnApplicationQuit()
         {
-            this.iMobileNotification.Register();
+            this.Register();
         }
 
         //すべてのローカルメッセージをクリアする
@@ -67,6 +67,11 @@ namespace Noa.LocalMobileNotification
         {
             Debug.Log("ローカルメッセージを削除する");
             this.iMobileNotification.CancelALLMessage(isForce);
+        }
+
+        public void Register()
+        {
+            this.iMobileNotification.Register();
         }
     }
 }

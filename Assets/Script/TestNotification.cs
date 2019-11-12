@@ -24,7 +24,7 @@ public class TestNotification : MonoBehaviour
     public void Send(int second, int channelId)
     {
         this.cnt += 1;
-        MobileNotificationManager.Ins.SendMessage("Test", $"Test -- Desc - {channelId}\nCount: {this.cnt}", second, channelId);
+        MobileNotificationManager.Ins.SendMessage("Test", $"Description\nSecond: {second}\nChanncel: {channelId}\nCount: {this.cnt}");
     }
 
     private void OnApplicationPause(bool pauseStatus)
@@ -34,6 +34,7 @@ public class TestNotification : MonoBehaviour
             MobileNotificationManager.Ins.SendMessage("Test", "SubTest", $"バックグラウンドに行ってから、10秒後", 10, 110);
             MobileNotificationManager.Ins.SendMessage("Test", "SubTest", $"バックグラウンドに行ってから、30秒後", 30, 130);
             MobileNotificationManager.Ins.SendMessage("Test", "SubTest", $"バックグラウンドに行ってから、1分後", 60, 160);
+            MobileNotificationManager.Ins.Register();
         }
     }
 

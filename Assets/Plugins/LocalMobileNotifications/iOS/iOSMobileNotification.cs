@@ -66,13 +66,9 @@ namespace Noa.LocalMobileNotification
                 channel.ForegroundPresentationOption = PresentationOption.Sound | PresentationOption.Alert;
             }
 
-            // iOSのPush通知設定
-            // iOSNotificationCenter.ScheduleNotification(channel);
-
-            // 登録を削除する
+            // 重複するチャンネルを削除する
             this.CancelMessage(channelId);
 
-            // 重複するチャンネルを取得する
             this.NotificationTable[channelId] = channel;
 
             return channel;
