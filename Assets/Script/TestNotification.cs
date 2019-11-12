@@ -34,7 +34,6 @@ public class TestNotification : MonoBehaviour
             MobileNotificationManager.Ins.SendMessage("Test", "SubTest", $"バックグラウンドに行ってから、10秒後", 10, 110);
             MobileNotificationManager.Ins.SendMessage("Test", "SubTest", $"バックグラウンドに行ってから、30秒後", 30, 130);
             MobileNotificationManager.Ins.SendMessage("Test", "SubTest", $"バックグラウンドに行ってから、1分後", 60, 160);
-            MobileNotificationManager.Ins.Register();
         }
     }
 
